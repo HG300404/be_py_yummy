@@ -5,11 +5,12 @@ class User(models.Model):
     password = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, default="")
     role = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='user_images/', null=True, blank=True)
-    level = models.IntegerField()
-    coin = models.FloatField()
+    image = models.ImageField(upload_to='user_images/', null=True, blank=True, default="")
+    level = models.IntegerField(default=0)
+    coin = models.IntegerField(default=0)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -22,6 +23,8 @@ class Restaurant(models.Model):
     address = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     opening_hours = models.CharField(max_length=100)
+    user = models.ForeignKey('User', on_delete=models.CASCADE,default="")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -32,8 +35,8 @@ class Restaurant(models.Model):
 class Dish(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='dish_images/', null=True, blank=True)
-    price = models.FloatField()
+    img = models.TextField(null=True, blank=True)
+    price = models.IntegerField()
     rate = models.IntegerField()
     type = models.CharField(max_length=100)
 
@@ -46,11 +49,12 @@ class Dish(models.Model):
 class Order(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE)
-    order_date = models.CharField(max_length=255)
-    price = models.FloatField()
-    ship = models.FloatField()
-    discount = models.FloatField()
-    total_amount = models.CharField(max_length=255)
+    price = models.IntegerField()
+    ship = models.IntegerField()
+    discount = models.IntegerField(default= 0)
+    total_amount = models.IntegerField()
+    payment = models.CharField(max_length=50, default='Tiền mặt')
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -58,7 +62,7 @@ class Order(models.Model):
         return f"Order #{self.id} - {self.user.name}"
 
 class OrderItem(models.Model):
-    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_items')
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
     item = models.ForeignKey('Dish', on_delete=models.CASCADE)
     quantity = models.IntegerField()
     options = models.CharField(max_length=255)
@@ -70,8 +74,9 @@ class OrderItem(models.Model):
         return f"Item {self.item.name} in Order #{self.order.id}"
 
 class Review(models.Model):
-    item = models.ForeignKey('Dish', on_delete=models.CASCADE)
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE,  default='')
     user = models.ForeignKey('User', on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, default='')
     rating = models.IntegerField()
     comment = models.TextField()
 
@@ -83,8 +88,9 @@ class Review(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
-    item = models.ForeignKey('Dish', on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    item = models.ForeignKey('Dish', on_delete=models.CASCADE, default= "")
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, default='')
+    quantity = models.PositiveIntegerField(default= 1)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

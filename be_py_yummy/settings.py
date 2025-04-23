@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure--)3n5-fago$u3zz*%+&1+#xejs)48k*k@=$$-xogogt09*tbg_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',  # localhost
+    'localhost',  # local DNS
+    '10.0.2.2',  # Địa chỉ IP của máy chủ trong môi trường giả lập Android (10.0.2.2 dùng cho Android Emulator)
+]
 
 
 # Application definition
@@ -39,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +58,20 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'be_py_yummy.urls'
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-language',
+    'content-type',
+    'x-csrftoken',  # Nếu bạn sử dụng CSRF token
+    'authorization',
+    'access-control-allow-origin',
+]
+
+CORS_EXPOSE_HEADERS = [
+    'access-control-allow-origin',  # Expose the header so frontend can access it
+]
+
 
 TEMPLATES = [
     {

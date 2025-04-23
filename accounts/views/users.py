@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.postgres.lookups import Unaccent
 from rest_framework import status, generics
 from rest_framework.response import Response
 from django.db.models import Q
@@ -28,7 +29,7 @@ class RegisterView(generics.CreateAPIView):
                 "status": "success",
                 "message": "Đăng ký thành công",
                 "user": response.data
-            }, status=status.HTTP_201_CREATED)
+            }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({
                 "status": "error",
@@ -94,12 +95,18 @@ class UserSearchView(generics.GenericAPIView):
                 "message": "No input to search"
             }, status=status.HTTP_400_BAD_REQUEST)
 
+        search_input = search_input.lower()
         # Tìm kiếm người dùng theo tên, email, phone hoặc address
-        users = User.objects.filter(
-            Q(name__icontains=search_input) |
-            Q(email__icontains=search_input) |
-            Q(phone__icontains=search_input) |
-            Q(address__icontains=search_input)
+        users = User.objects.annotate(
+            name_unaccent=Unaccent('name'),
+            email_unaccent=Unaccent('email'),
+            phone_unaccent=Unaccent('phone'),
+            address_unaccent=Unaccent('address')
+        ).filter(
+            Q(name_unaccent__icontains=search_input) |
+            Q(email_unaccent__icontains=search_input) |
+            Q(phone_unaccent__icontains=search_input) |
+            Q(address_unaccent__icontains=search_input)
         )
 
         if not users:
