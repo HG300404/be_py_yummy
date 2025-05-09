@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'be_py_yummy.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Chọn PostgreSQL
-        'NAME': 'yummy',  # Tên cơ sở dữ liệu
-        'USER': 'hg',  # Tên người dùng PostgreSQL
-        'PASSWORD': '123',  # Mật khẩu người dùng
+        'NAME': 'yumi',  # Tên cơ sở dữ liệu
+        'USER': 'postgres',  # Tên người dùng PostgreSQL
+        'PASSWORD': '123456',  # Mật khẩu người dùng
         'HOST': 'localhost',  # Địa chỉ của PostgreSQL (thường là localhost nếu chạy trên máy tính cá nhân)
         'PORT': '5432',  # Cổng mặc định của PostgreSQL
     }

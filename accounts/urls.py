@@ -7,6 +7,7 @@ from accounts.views.orders import *
 from accounts.views.restaurants import *
 from accounts.views.reviews import *
 from accounts.views.users import *
+from accounts.views.rasa_Api import *
 
 urlpatterns = [
     #USER
@@ -83,4 +84,5 @@ urlpatterns = [
     path('comment/delete/<str:item_id>/<str:user_id>', ReviewDeleteView.as_view(), name='delete_review'),
     path('comment/deleteAll', ReviewDeleteAllView.as_view(), name='delete_all_reviews'),
     path('comment/search/<str:input>', ReviewSearchView.as_view(), name='search_reviews'),
+    path('webhook/',RasaChatbot.as_view(), name='rasa_webhook'),
 ]

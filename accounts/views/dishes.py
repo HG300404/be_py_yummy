@@ -183,9 +183,7 @@ class DishSearchView(generics.GenericAPIView):
 
 class DishSearchDishView(generics.GenericAPIView):
 
-    def get(self, request, *args, **kwargs):
-        input = request.query_params.get('input', '')  # Lấy từ khóa tìm kiếm từ query params
-
+    def get(self, request, input, *args, **kwargs):
         if not input:
             return Response({
                 "status": "error",
@@ -228,7 +226,7 @@ class DishSearchDishView(generics.GenericAPIView):
             })
 
         return Response(list_data, status=status.HTTP_200_OK)
-
+    
 class DishDetailView(generics.RetrieveAPIView):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer

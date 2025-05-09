@@ -22,16 +22,11 @@ class OrderCreateView(generics.CreateAPIView):
                     "message": "Not enough info"
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            user_id = request.data.get('user_id')
-            user = User.objects.get(id=user_id)
-
-            restaurant_id = request.data.get('restaurant_id')
-            restaurant = Restaurant.objects.get(id=restaurant_id)
 
             # Tạo đơn hàng mới
             order = Order.objects.create(
-                user_id=user,
-                restaurant_id=restaurant,
+                user_id=request.data.get('user_id'),
+                restaurant_id=request.data.get('restaurant_id'),
                 price=request.data.get('price'),
                 ship=request.data.get('ship'),
                 discount=request.data.get('discount'),
