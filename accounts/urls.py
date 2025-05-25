@@ -27,6 +27,7 @@ urlpatterns = [
     path('restaurant/update/<int:pk>', RestaurantUpdateView.as_view(), name='restaurant-update'),
     path('restaurant/delete/<int:pk>', RestaurantDeleteView.as_view(), name='restaurant-delete'),
     path('restaurant/search/<str:input>', RestaurantSearchView.as_view(), name='restaurant-search'),
+    path('restaurants/order-by-rate/', RestaurantOrderByRateListView.as_view(), name='restaurants-order-by-rate'),
     path('restaurant/searchColumn/<str:label>/<str:input>', RestaurantSearchColumnView.as_view(),
          name='restaurant-searchColumn'),
     #Chua test

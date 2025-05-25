@@ -2,6 +2,8 @@ from django.contrib.postgres.lookups import Unaccent
 from rest_framework import status, generics
 from rest_framework.response import Response
 from django.db.models import Q, Count
+from django.db.models import Avg, Count
+
 
 from accounts.models import Restaurant, User
 from accounts.serializers import RestaurantSerializer
@@ -48,8 +50,16 @@ class RestaurantListView(generics.ListAPIView):
     serializer_class = RestaurantSerializer
 
 class RestaurantDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
+
+    def get_queryset(self):
+        return Restaurant.objects.annotate(total_rate=Avg('reviews__rating'))
+
+class RestaurantOrderByRateListView(generics.ListAPIView):
+    serializer_class = RestaurantSerializer
+
+    def get_queryset(self):
+        return Restaurant.objects.annotate(total_rate=Avg('reviews__rating')).order_by('total_rate')
 
 class RestaurantOwnerView(generics.GenericAPIView):
     serializer_class = RestaurantSerializer
