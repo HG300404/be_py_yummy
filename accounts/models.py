@@ -74,7 +74,7 @@ class OrderItem(models.Model):
         return f"Item {self.item.name} in Order #{self.order.id}"
 
 class Review(models.Model):
-    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE,  default='')
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE,related_name='reviews',  default='')
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     order = models.ForeignKey('Order', on_delete=models.CASCADE, default='')
     rating = models.IntegerField()

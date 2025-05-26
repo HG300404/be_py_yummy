@@ -7,6 +7,7 @@ from accounts.views.orders import *
 from accounts.views.restaurants import *
 from accounts.views.reviews import *
 from accounts.views.users import *
+from accounts.views.rasa_Api import *
 
 urlpatterns = [
     #USER
@@ -26,6 +27,7 @@ urlpatterns = [
     path('restaurant/update/<int:pk>', RestaurantUpdateView.as_view(), name='restaurant-update'),
     path('restaurant/delete/<int:pk>', RestaurantDeleteView.as_view(), name='restaurant-delete'),
     path('restaurant/search/<str:input>', RestaurantSearchView.as_view(), name='restaurant-search'),
+    path('restaurants/order-by-rate/', RestaurantOrderByRateListView.as_view(), name='restaurants-order-by-rate'),
     path('restaurant/searchColumn/<str:label>/<str:input>', RestaurantSearchColumnView.as_view(),
          name='restaurant-searchColumn'),
     #Chua test
@@ -83,4 +85,5 @@ urlpatterns = [
     path('comment/delete/<str:item_id>/<str:user_id>', ReviewDeleteView.as_view(), name='delete_review'),
     path('comment/deleteAll', ReviewDeleteAllView.as_view(), name='delete_all_reviews'),
     path('comment/search/<str:input>', ReviewSearchView.as_view(), name='search_reviews'),
+    path('webhook/',RasaChatbot.as_view(), name='rasa_webhook'),
 ]
