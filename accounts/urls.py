@@ -8,6 +8,7 @@ from accounts.views.restaurants import *
 from accounts.views.reviews import *
 from accounts.views.users import *
 from accounts.views.rasa_Api import *
+from .views.vnpay import vnpay_ipn, vnpay_return
 
 urlpatterns = [
     #USER
@@ -86,4 +87,11 @@ urlpatterns = [
     path('comment/deleteAll', ReviewDeleteAllView.as_view(), name='delete_all_reviews'),
     path('comment/search/<str:input>', ReviewSearchView.as_view(), name='search_reviews'),
     path('webhook/',RasaChatbot.as_view(), name='rasa_webhook'),
+
+    # VNPAY
+    path('vnpay/ipn/', vnpay_ipn, name='vnpay_ipn'),
+    path('orders/vnpay/', OrderCreateVNPAYView.as_view(), name='order-create-vnpay'),
+    path('vnpay/return/', vnpay_return, name='vnpay_return'),
+#     path('ipn/', views.vnpay_ipn, name='vnpay_ipn'),
+#     path('vnpay/return/', views.vnpay.vnpay_return, name='vnpay_return'),
 ]
