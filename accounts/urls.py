@@ -67,6 +67,7 @@ urlpatterns = [
 
     #CARTS
     path('cart/create', CartCreateView.as_view(), name='cart-create'),
+    path('cart/getAll', CartListView.as_view(), name='cart-getAll'),
     path('cart/getAll/<int:user_id>/<int:restaurant_id>', CartGetAllView.as_view(), name='cart-getAll'),
     path('cart/getAllByUser/<int:user_id>/', CartGetAllByUserView.as_view(), name='cart-get-all-by-user'),
     path('cart/update', CartUpdateView.as_view(), name='cart-update'),
@@ -83,4 +84,5 @@ urlpatterns = [
     path('comment/delete/<str:item_id>/<str:user_id>', ReviewDeleteView.as_view(), name='delete_review'),
     path('comment/deleteAll', ReviewDeleteAllView.as_view(), name='delete_all_reviews'),
     path('comment/search/<str:input>', ReviewSearchView.as_view(), name='search_reviews'),
+    path('comment/delete/<int:pk>', CommentDeleteView.as_view(), name='comment-delete'),
 ]

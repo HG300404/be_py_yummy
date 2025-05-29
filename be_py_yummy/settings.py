@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure--)3n5-fago$u3zz*%+&1+#xejs)48k*k@=$$-xogogt09*tbg_
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'ef38-2001-ee1-db03-4a90-d096-dc38-95f7-5042.ngrok-free.app',
     '127.0.0.1',  # localhost
     'localhost',  # local DNS
     '10.0.2.2',  # Địa chỉ IP của máy chủ trong môi trường giả lập Android (10.0.2.2 dùng cho Android Emulator)

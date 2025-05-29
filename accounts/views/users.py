@@ -124,10 +124,9 @@ class UserUpdateView(generics.UpdateAPIView):
     serializer_class = UserSerializer
 
     def update(self, request, *args, **kwargs):
-        user = self.get_object()
         password = request.data.get('password')
         if password:
-            user.password = make_password(password)  # Mã hóa mật khẩu
+            request.data['password'] = make_password(password)  # Mã hóa mật khẩu
         return super().update(request, *args, **kwargs)
 
 
