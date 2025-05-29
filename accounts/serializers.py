@@ -13,9 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    total_rate = serializers.FloatField(read_only=True)
     class Meta:
         model = Restaurant
-        fields = ['id', 'name', 'phone', 'address', 'opening_hours', 'user_id', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'phone', 'address', 'opening_hours', 'user_id','total_rate', 'created_at', 'updated_at']
 
 class DishSerializer(serializers.ModelSerializer):
     class Meta:

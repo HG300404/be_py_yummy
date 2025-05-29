@@ -25,11 +25,18 @@ SECRET_KEY = 'django-insecure--)3n5-fago$u3zz*%+&1+#xejs)48k*k@=$$-xogogt09*tbg_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+VNPAY_TMN_CODE = 'D062FM6Y'  # Thay bằng vnp_TmnCode từ Sandbox
+VNPAY_HASH_SECRET_KEY = 'ZGLPKDIR4V1PH6YXL9NVAFVKSQBQN6PP'  # Thay bằng vnp_HashSecret
+VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+VNPAY_RETURN_URL = 'https://3d58-2001-ee1-db01-fd0-854d-a1a9-43df-30e3.ngrok-free.app/api/vnpay/return/' # Thay bằng URL ngrok
+VNPAY_IPN_URL = 'https://3d58-2001-ee1-db01-fd0-854d-a1a9-43df-30e3.ngrok-free.app/api/vnpay/ipn/'  # Thay bằng URL ngrok
+
 ALLOWED_HOSTS = [
     'ef38-2001-ee1-db03-4a90-d096-dc38-95f7-5042.ngrok-free.app',
     '127.0.0.1',  # localhost
     'localhost',  # local DNS
     '10.0.2.2',  # Địa chỉ IP của máy chủ trong môi trường giả lập Android (10.0.2.2 dùng cho Android Emulator)
+    '3d58-2001-ee1-db01-fd0-854d-a1a9-43df-30e3.ngrok-free.app',  # Thêm URL ngrok
 ]
 
 
@@ -100,8 +107,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Chọn PostgreSQL
         'NAME': 'yummy',  # Tên cơ sở dữ liệu
-        'USER': 'hg',  # Tên người dùng PostgreSQL
-        'PASSWORD': '123',  # Mật khẩu người dùng
+        'USER': 'postgres',  # Tên người dùng PostgreSQL
+        'PASSWORD': '210424',  # Mật khẩu người dùng
         'HOST': 'localhost',  # Địa chỉ của PostgreSQL (thường là localhost nếu chạy trên máy tính cá nhân)
         'PORT': '5432',  # Cổng mặc định của PostgreSQL
     }

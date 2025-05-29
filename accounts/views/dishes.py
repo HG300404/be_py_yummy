@@ -47,7 +47,7 @@ class DishTopView(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         try:
             # Thực hiện join giữa Dishes, OrderItems, Orders và Restaurants
-            top_dishes = Dish.objects.annotate(order_count=Count('orderitem')).select_related('restaurant').values('img', 'name', 'restaurant__name', 'type', 'rate', 'price', 'restaurant_id').order_by('-order_count')
+            top_dishes = Dish.objects.annotate(order_count=Count('rate')).select_related('restaurant').values('img', 'name', 'restaurant__name', 'type', 'rate', 'price', 'restaurant_id').order_by('-rate')
 
             if not top_dishes:
                 return Response({
@@ -226,7 +226,7 @@ class DishSearchDishView(generics.GenericAPIView):
             })
 
         return Response(list_data, status=status.HTTP_200_OK)
-
+    
 class DishDetailView(generics.RetrieveAPIView):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer

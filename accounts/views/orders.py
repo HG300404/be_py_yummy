@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from accounts.models import Order, Restaurant, User
 from accounts.serializers import OrderSerializer
+from .vnpay import generate_vnpay_payment_url
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -179,3 +180,26 @@ class TotalOrderByWeekdayView(generics.GenericAPIView):
          .order_by('created_at__weekday')
 
         return Response(total_orders, status=status.HTTP_200_OK)
+
+class OrderCreateVNPAYView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def post(self, request, *args, **kwargs):
+        # ... kiểm tra dữ liệu đầu vào ...
+        order = Order.objects.create(
+            user_id=request.data.get('user_id'),
+            restaurant_id=request.data.get('restaurant_id'),
+            price=request.data.get('price'),
+            ship=request.data.get('ship'),
+            discount=request.data.get('discount'),
+            total_amount=request.data.get('total_amount'),
+            payment="Trực tuyến",
+            vnpay_payment_status=Order.PENDING_VNPAY
+        )
+        client_ip = request.META.get('REMOTE_ADDR')
+        payment_url = generate_vnpay_payment_url(order, order.total_amount, client_ip)
+        return Response({
+            "order_id": order.id,
+            "payment_url": payment_url
+        }, status=status.HTTP_201_CREATED)
