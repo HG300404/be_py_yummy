@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class User(models.Model):
     name = models.CharField(max_length=255)
@@ -53,13 +54,87 @@ class Order(models.Model):
     ship = models.IntegerField()
     discount = models.IntegerField(default= 0)
     total_amount = models.IntegerField()
-    payment = models.CharField(max_length=50, default='Tiền mặt')
+    payment = models.CharField(max_length=50, default='Tiền mặt', db_index=True)
+    vnpay_payment_status = models.CharField(
+        max_length=20, blank=True, null=True, db_index=True,
+        choices=[
+            ('pending_vnpay', 'VNPAY - Chờ thanh toán'),
+            ('paid_vnpay', 'VNPAY - Đã thanh toán'),
+            ('failed_vnpay', 'VNPAY - Thanh toán lỗi')
+        ],
+        help_text='Trạng thái thanh toán cụ thể qua VNPAY.'
+    )
+    vnpay_response_code = models.CharField(max_length=2, blank=True, null=True, help_text='Mã phản hồi từ VNPAY (vnp_ResponseCode).')
+    vnpay_transaction_no = models.CharField(max_length=100, blank=True, null=True, help_text='Mã giao dịch do VNPAY cung cấp khi thành công (vnp_TransactionNo).')
+    vnpay_txn_ref = models.CharField(max_length=100, blank=True, null=True, unique=True, db_index=True, help_text='Mã giao dịch của Merchant gửi cho VNPAY (vnp_TxnRef).')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # 1. Mã tham chiếu đơn hàng gửi cho VNPAY (vnp_TxnRef)
+    #    Mã này do hệ thống của bạn tạo ra, phải duy nhất trong ngày.
+    #    Ví dụ: ORDER_ID_TIMESTAMP
+    vnpay_txn_ref = models.CharField(
+        max_length=100,
+        blank=True,  # Có thể trống nếu không thanh toán qua VNPAY
+        null=True,
+        unique=True, # Đảm bảo duy nhất nếu được sử dụng
+        db_index=True,
+        help_text="Mã giao dịch của Merchant gửi cho VNPAY (vnp_TxnRef)."
+    )
+
+    # 2. Trạng thái thanh toán VNPAY
+    PENDING_VNPAY = 'pending_vnpay'
+    PAID_VNPAY = 'paid_vnpay'
+    FAILED_VNPAY = 'failed_vnpay'
+    VNPAY_STATUS_CHOICES = [
+        (PENDING_VNPAY, 'VNPAY - Chờ thanh toán'),
+        (PAID_VNPAY, 'VNPAY - Đã thanh toán'),
+        (FAILED_VNPAY, 'VNPAY - Thanh toán lỗi'),
+    ]
+    vnpay_payment_status = models.CharField(
+        max_length=20,
+        choices=VNPAY_STATUS_CHOICES,
+        blank=True, # Có thể trống nếu không thanh toán qua VNPAY
+        null=True,
+        db_index=True,
+        help_text="Trạng thái thanh toán cụ thể qua VNPAY."
+    )
+
+    # 3. Mã giao dịch của VNPAY (vnp_TransactionNo)
+    #    Mã này do VNPAY trả về khi giao dịch thành công (qua IPN).
+    vnpay_transaction_no = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Mã giao dịch do VNPAY cung cấp khi thành công (vnp_TransactionNo)."
+    )
+
+    # 4. Mã phản hồi từ VNPAY (vnp_ResponseCode)
+    #    Lưu mã này từ IPN (và cả Return URL nếu muốn) để debug.
+    vnpay_response_code = models.CharField(
+        max_length=2, # Thường là 2 chữ số, ví dụ '00'
+        blank=True,
+        null=True,
+        help_text="Mã phản hồi từ VNPAY (vnp_ResponseCode)."
+    )
+
+
+
     def __str__(self):
-        return f"Order #{self.id} - {self.user.name}"
+        return f"Order #{self.id} - {self.user.name} - Method {self.payment}"
+
+    def generate_vnpay_txn_ref(self):
+        """
+        Hàm gợi ý để tạo mã vnpay_txn_ref duy nhất.
+        Nên được gọi khi người dùng chọn thanh toán VNPAY và trước khi tạo URL.
+        """
+        if not self.id:
+            # Điều này không nên xảy ra nếu bạn lưu đơn hàng trước khi tạo ref
+            raise ValueError("Order must be saved and have an ID before generating vnpay_txn_ref.")
+        # Kết hợp ID đơn hàng và timestamp để tăng tính duy nhất
+        timestamp = int(timezone.now().timestamp())
+        return f"ORDER_{self.id}_{timestamp}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey('Order', on_delete=models.CASCADE)
