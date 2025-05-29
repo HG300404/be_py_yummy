@@ -88,6 +88,7 @@ class ReviewGetByRestaurantView(generics.GenericAPIView):
             reviews = Review.objects.filter(restaurant_id=restaurant.id)
             review_list = [
                 {
+                    'id': item.id,
                     'rating': item.rating,
                     'user_name': item.user.name,
                     'comment': item.comment,
@@ -126,7 +127,18 @@ class ReviewDeleteAllView(generics.GenericAPIView):
         except Exception as e:
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class CommentDeleteView(generics.DestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
+    def delete(self, request, *args, **kwargs):
+        review = self.get_object()
+        review.delete()
+
+        return Response({
+            "status": "success",
+            "message": "review deleted successfully"
+        }, status=status.HTTP_200_OK)
 class ReviewSearchView(generics.GenericAPIView):
     def get(self, request, input, *args, **kwargs):
         if not input:

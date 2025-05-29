@@ -38,6 +38,14 @@ class CartCreateView(generics.CreateAPIView):
                 "message": f"Error: {str(e)}"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class CartListView(generics.ListAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+    def get(self, request, *args, **kwargs):
+        carts = Cart.objects.all()
+        return Response(CartSerializer(carts, many=True).data, status=status.HTTP_200_OK)
+
 class CartGetAllView(generics.GenericAPIView):
     def get(self, request, user_id, restaurant_id):
         try:

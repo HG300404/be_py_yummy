@@ -32,6 +32,7 @@ VNPAY_RETURN_URL = 'https://3d58-2001-ee1-db01-fd0-854d-a1a9-43df-30e3.ngrok-fre
 VNPAY_IPN_URL = 'https://3d58-2001-ee1-db01-fd0-854d-a1a9-43df-30e3.ngrok-free.app/api/vnpay/ipn/'  # Thay bằng URL ngrok
 
 ALLOWED_HOSTS = [
+    'ef38-2001-ee1-db03-4a90-d096-dc38-95f7-5042.ngrok-free.app',
     '127.0.0.1',  # localhost
     'localhost',  # local DNS
     '10.0.2.2',  # Địa chỉ IP của máy chủ trong môi trường giả lập Android (10.0.2.2 dùng cho Android Emulator)
